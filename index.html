@@ -8,24 +8,171 @@
     body {
       margin: 0;
       overflow: hidden;
+      font-family: Arial, sans-serif;
     }
 
     canvas {
       display: block;
     }
+
+    .ui-panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+    }
+
+    .swatch-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .swatch-group input[type="radio"] {
+      display: none;
+    }
+
+    .swatch-label {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .swatch-group input[type="radio"]:checked+.swatch-label {
+      border: 2px solid #333;
+    }
+
+    .swatch-gold {
+      background-color: #FFD700;
+    }
+
+    .swatch-rose {
+      background-color: #B76E79;
+    }
+
+    .swatch-silver {
+      background-color: #D9D9D9;
+    }
+
+    .swatch-platinum {
+      background-color: #E5E4E2;
+    }
+
+    .swatch-whitegold {
+      background-color: #E0E0E0;
+    }
+
+    .swatch-white {
+      background-color: #e6f7ff;
+    }
+
+    .swatch-pink {
+      background-color: #ff87ed;
+    }
+
+    .swatch-yellow {
+      background-color: #fffacd;
+    }
+
+    .swatch-blue {
+      background-color: #167d9e;
+    }
+
+    .ui-panel button {
+      margin-top: 4px;
+      width: 100%;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #f8f8f8;
+      cursor: pointer;
+    }
+
+    .label-group {
+      font-size: 13px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    label[title] {
+      position: relative;
+    }
+
+    label[title]::after {
+      content: attr(title);
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 3px 6px;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    label[title]:hover::after {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body>
-  <!-- This runs Temp.js as a module -->
-  <script type="module" src="./Temp.js"></script>
-  <div style="position:absolute; top:10px; left:10px; z-index:1;">
-    <button onclick="setMetalColor('gold')">Gold</button>
-    <button onclick="setMetalColor('rose')">Rose Gold</button>
-    <button onclick="setMetalColor('silver')">Silver</button>
+  <div class="ui-panel">
+    <div class="label-group">Metal Color</div>
+    <div class="swatch-group">
+      <label title="Gold">
+        <input type="radio" name="metalColor" value="gold" checked onclick="setMetalColor('gold')">
+        <span class="swatch-label swatch-gold"></span>
+      </label>
+      <label title="Rose Gold">
+        <input type="radio" name="metalColor" value="rose" onclick="setMetalColor('rose')">
+        <span class="swatch-label swatch-rose"></span>
+      </label>
+      <label title="White Gold">
+        <input type="radio" name="metalColor" value="whiteGold" onclick="setMetalColor('whiteGold')">
+        <span class="swatch-label swatch-whitegold"></span>
+      </label>
+    </div>
+
+    <div class="label-group">Metal Finish</div>
+    <button onclick="setMetalFinish('polished')">Polished</button>
+    <button onclick="setMetalFinish('brushed')">Brushed</button>
+
+    <div class="label-group" style="margin-top: 12px;">Gemstone</div>
+    <div class="swatch-group">
+      <label title="White Diamond">
+        <input type="radio" name="stoneColor" value="white" checked onclick="setDiamondColor('#e6f7ff')">
+        <span class="swatch-label swatch-white"></span>
+      </label>
+      <label title="Pink Diamond">
+        <input type="radio" name="stoneColor" value="pink" onclick="setDiamondColor('#ffc0cb')">
+        <span class="swatch-label swatch-pink"></span>
+      </label>
+      <label title="Yellow Diamond">
+        <input type="radio" name="stoneColor" value="yellow" onclick="setDiamondColor('#fffacd')">
+        <span class="swatch-label swatch-yellow"></span>
+      </label>
+      <label title="Blue Diamond">
+        <input type="radio" name="stoneColor" value="blue" onclick="setDiamondColor('#add8e6')">
+        <span class="swatch-label swatch-blue"></span>
+      </label>
+    </div>
   </div>
 
-
+  <script type="module" src="./Temp.js"></script>
 </body>
 
 </html>
