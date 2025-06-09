@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>GLB Auto-Renamer by Diamond Shape</title>
+</head>
+
+<body>
+    <h2>GLB Auto-Renamer by Diamond Shape</h2>
+    <input type="file" id="fileInput" accept=".glb" />
+    <p>Uploads and renames nodes based on diamond shape or defaults to metal.</p>
+
+    <script type="module">
+        import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+        import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
+        import { GLTFExporter } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/exporters/GLTFExporter.js";
+
+        const fileInput = document.getElementById("fileInput");
+
+        fileInput.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return alert("Please select a file.");
+
+            const arrayBuffer = await file.arrayBuffer();
+            const loader = new GLTFLoader();
+
+            loader.parse(arrayBuffer, "", (gltf) => {
+                console.log("✅ GLB Loaded.");
+
+                const shapeKeywords = [
+                    "round",       // Round Brilliant
+                    "princess",    // Square princess cut
+                    "emerald",     // Rectangular emerald cut
+                    "asscher",     // Square emerald-like
+                    "marquise",    // Football-shaped
+                    "oval",        // Elongated round
+                    "radiant",     // Rectangular brilliant
+                    "pear",        // Teardrop shape
+                    "heart",       // Heart shape
+                    "cushion",     // Pillow-like
+                    "baguette",    // Slim rectangular
+                    "trillion",    // Triangular
+                    "triangle",    // Alt spelling
+                    "hexagon",     // Rare shape
+                    "octagon",     // Rare angular shape
+                    "kite",        // Specialty cut
+                    "shield",      // Modified cut
+                    "briolette"    // Faceted drop (common in dangle)
+                ];
+
+                const shapeCounters = Object.fromEntries(shapeKeywords.map(k => [k, 0]));
+                let metalCounter = 0;
+
+                gltf.scene.traverse((node) => {
+                    if (!node.isMesh) return;
+
+                    const name = node.name?.toLowerCase() || "";
+                    const mat = node.material;
+                    let shape = null;
+
+                    // Check name for shape keywords
+                    for (const keyword of shapeKeywords) {
+                        if (name.includes(keyword)) {
+                            shape = keyword;
+                            break;
+                        }
+                    }
+
+                    // Additional material-based diamond check
+                    const looksLikeDiamond =
+                        shape ||
+                        name.includes("diamond") ||
+                        name.includes("gem") ||
+                        (mat?.metalness < 0.1 && mat?.roughness < 0.3);
+
+                    if (looksLikeDiamond && shape) {
+                        const count = shapeCounters[shape]++;
+                        node.name = `diamond_${shape}_${count}`;
+                        console.log(`💎 Renamed to: ${node.name}`);
+                    } else if (looksLikeDiamond) {
+                        node.name = `diamond_misc_${shapeCounters.round++}`;
+                        console.log(`💎 Renamed to: ${node.name}`);
+                    } else {
+                        node.name = `metal_${metalCounter++}`;
+                        console.log(`🔩 Renamed to: ${node.name}`);
+                    }
+                });
+
+                // Export renamed GLB
+                const exporter = new GLTFExporter();
+                exporter.parse(
+                    gltf.scene,
+                    (glb) => {
+                        const blob = new Blob([glb], { type: "model/gltf-binary" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = "renamed_by_shape.glb";
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    },
+                    { binary: true }
+                );
+
+                alert("✅ Renaming complete. File is downloading.");
+            }, (err) => {
+                console.error("❌ Failed to load GLB:", err);
+            });
+        });
+    </script>
+</body>
+
+</html>
