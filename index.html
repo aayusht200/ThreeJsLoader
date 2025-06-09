@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>GLB Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- This runs Temp.js as a module -->
+  <script type="module" src="./Temp.js"></script>
+  <div style="position:absolute; top:10px; left:10px; z-index:1;">
+    <button onclick="setMetalColor('gold')">Gold</button>
+    <button onclick="setMetalColor('rose')">Rose Gold</button>
+    <button onclick="setMetalColor('silver')">Silver</button>
+  </div>
+
+
+</body>
+
+</html>
